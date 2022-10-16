@@ -1,5 +1,5 @@
 UBUNTU_BOXES= trusty xenial
-DEBIAN_BOXES= jessie stretch sid
+DEBIAN_BOXES= bullseye jessie stretch sid
 CENTOS_BOXES= 7
 FEDORA_BOXES= 27 
 TODAY=$(shell date -u +"%Y-%m-%d")
