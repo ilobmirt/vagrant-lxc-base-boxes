@@ -5,7 +5,8 @@ FEDORA_BOXES= 27
 TODAY=$(shell date -u +"%Y-%m-%d")
 
 # Replace i686 with i386 and x86_64 with amd64
-ARCH=$(shell uname -m | sed -e "s/68/38/" | sed -e "s/x86_64/amd64/")
+# Added support for aarch64 as arm64
+ARCH=$(shell uname -m | sed -e "s/68/38/" | sed -e "s/x86_64/amd64/" | sed -e "s/aarch64/arm64/")
 
 default:
 
