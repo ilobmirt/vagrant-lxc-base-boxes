@@ -6,21 +6,28 @@ This repository contains a set of scripts for creating base boxes for usage with
 ## What distros / versions can I build with this?
 
 * Ubuntu
-  - Xenial 16.04 x86_64
+  - Trusty (2014.04) (x86_64 + arm64)
+  - Xenial (2016.04) (x86_64 + arm64)
 * Debian
-  - Stretch x86_64
-  - Sid x86_64
+  - Jessie (2015.04) (x86_64 + arm64)
+  - Stretch (2017.06) (x86_64 + arm64)
+  - Bullseye (2021.08) (x86_64 + arm64)
+  - Sid (x86_64 + arm64)
 * Fedora
-  - 23 x86_64
-  - rawhide x86_64
+  - 23 (2015.11) (x86_64 + arm64)
+  - rawhide (x86_64 + arm64)
 * CentOS
-  - 7 x86_64
+  - 7 (2014.07) (x86_64 + arm64)
+
+## Distros tested from this fork
+* Debian
+  - Bullseye (2021.08) (arm64)
 
 ## Status
 
-This is a fork of `obnoxxx/vagrant-lxc-base-boxes` which itself was a fork for
+This is a fork of `hsoft/vagrant-lxc-base-boxes` which itself was a fork for
 `fgrehm/vagrant-lxc-base-boxes`. The goal is to make LXC box generation work for LXC 3.0+. The
-repo is not in top shape, but it works `make stretch` (which is what I use myself).
+repo is not in top shape, but it works `make bullseye` (which is what I use myself).
 
 It should be easy enough for you to add support for distros you use (PR welcome).
 
