@@ -1,0 +1,15 @@
+VALID_OS += ubuntu
+UBUNTU_VERSIONS = bionic focal jammy kinetic xenial
+SELECTED_VERSIONS += $(if $(findstring ubuntu,$(OS_TARGET)),$(UBUNTU_VERSIONS))
+
+VALID_OS += debian
+DEBIAN_VERSIONS = buster bullseye bookworm sid
+SELECTED_VERSIONS += $(if $(findstring debian,$(OS_TARGET)),$(DEBIAN_VERSIONS))
+
+VALID_OS += centos
+CENTOS_VERSIONS = 7 8-Stream 9-Stream
+SELECTED_VERSIONS += $(if $(findstring centos,$(OS_TARGET)),$(CENTOS_VERSIONS))
+
+VALID_OS += fedora
+FEDORA_VERSIONS = 36 35
+SELECTED_VERSIONS += $(if $(findstring fedora,$(OS_TARGET)),$(FEDORA_VERSIONS))

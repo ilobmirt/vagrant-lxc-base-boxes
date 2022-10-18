@@ -6,22 +6,47 @@ This repository contains a set of scripts for creating base boxes for usage with
 ## What distros / versions can I build with this?
 
 * Ubuntu
-  - Trusty (2014.04) (x86_64 + arm64)
-  - Xenial (2016.04) (x86_64 + arm64)
+  - Jammy Jellyfish (2022.04) (x86_64 + arm64)
 * Debian
-  - Jessie (2015.04) (x86_64 + arm64)
-  - Stretch (2017.06) (x86_64 + arm64)
   - Bullseye (2021.08) (x86_64 + arm64)
   - Sid (x86_64 + arm64)
 * Fedora
-  - 23 (2015.11) (x86_64 + arm64)
+  - 36 (2022.02) (x86_64 + arm64)
   - rawhide (x86_64 + arm64)
 * CentOS
   - 7 (2014.07) (x86_64 + arm64)
 
 ## Distros tested from this fork
-* Debian
-  - Bullseye (2021.08) (arm64)
+* **Debian**
+  - Bullseye (2021.08) (x86_64/arm64)
+    - [] / [X] Base IMG
+    - [] / [] Ansible
+    - [] / [] Chef
+    - [] / [] Puppet
+    - [] / [] Salt
+
+* **Fedora**
+  - 36 (2022.04) (x86_64/arm64)
+    - [] / [X] Base IMG
+    - [] / [] Ansible
+    - [] / [] Chef
+    - [] / [] Puppet
+    - [] / [] Salt
+
+* **Ubuntu**
+  - Jammy Jellyfish (2022.04) (x86_64/arm64)
+    - [] / [X] Base IMG
+    - [] / [] Ansible
+    - [] / [] Chef
+    - [] / [] Puppet
+    - [] / [] Salt
+
+## Container Hosts testing this fork
+
+**ARM64**
+> OS: Debian GNU/Linux 11 (bullseye) aarch64
+> 
+> Host: Radxa ROCK Pi 4B
 
 ## Status
 
