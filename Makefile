@@ -1,7 +1,7 @@
-UBUNTU_BOXES= trusty xenial
-DEBIAN_BOXES= bullseye jessie stretch sid
+UBUNTU_BOXES= jammy
+DEBIAN_BOXES= bullseye sid
 CENTOS_BOXES= 7
-FEDORA_BOXES= 27 
+FEDORA_BOXES= 36
 TODAY=$(shell date -u +"%Y-%m-%d")
 
 # Replace i686 with i386 and x86_64 with amd64
