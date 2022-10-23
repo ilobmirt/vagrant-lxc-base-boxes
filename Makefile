@@ -38,7 +38,7 @@ endif
 #Clean up the boxes made previously
 clean:
 	@echo cleaning up all projects
-	@sudo -E ./clean.sh "vagrant-base-[a-zA-Z]*-[a-zA-Z0-9\-]*-[a-zA-Z0-9]*" "output/${TODAY}/"
+	@sudo -E ./clean.sh "vagrant-base-[a-zA-Z]*-[a-zA-Z0-9\-\.]*-[a-zA-Z0-9]*" "output/${TODAY}/"
 
 #Catch anything else without freaking out
 %:
