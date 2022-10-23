@@ -1,12 +1,11 @@
 #!/bin/bash
 set -e
 #=================================================================================================#
-#fix1-issue-91.sh
+#fix1-download-systemd.sh
 #----------
-#(2022_10_21)
+#(2022_10_23)
 #
-# Fixes Networking issues in debian
-# See https://github.com/fgrehm/vagrant-lxc/issues/91 for more info
+# Moved systemd support patch from common/download.sh
 #=================================================================================================#
 
 source common/ui.sh
@@ -14,22 +13,30 @@ source common/utils.sh
 
 commit_patch(){
 
-  if ! $(grep -q 'ip6-allhosts' ${ROOTFS}/etc/hosts); then
-    log "Adding ipv6 allhosts entry to container's /etc/hosts"
-    echo 'ff02::3 ip6-allhosts' >> ${ROOTFS}/etc/hosts
-  fi
-  
-  sed -i -e "s/\(127.0.0.1\s\+localhost\)/\1\n127.0.1.1\t${CONTAINER}\n/g" ${ROOTFS}/etc/hosts
+  local patch_contents=$(cat <<EOF
+
+# settings for systemd with PID 1:
+lxc.autodev = 1
+EOF
+)
+
+  utils.lxc.stop
+
+  echo "${patch_contents}" | sudo tee -a /var/lib/lxc/${CONTAINER}/config > /dev/null
+
+  utils.lxc.start
+  utils.lxc.attach rm -f /dev/kmsg
+  utils.lxc.stop
 
 }
 
 #The main function that executes our program
 main(){
 
-  local prereq_distro='ubuntu'
   local prereq_releases=()
+  local excluded_releases=()
   
-  if [ "${DISTRIBUTION}" = "$prereq_distro" ] && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
+  if (! [[ ${excluded_releases[*]} =~ ${RELEASE} ]]) && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
   
     info "This patch is applicable to [${DISTRIBUTION} - ${RELEASE}]. Applying patch."
     commit_patch $@

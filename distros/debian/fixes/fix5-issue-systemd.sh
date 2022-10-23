@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 #=================================================================================================#
-#fix4-issue-systemd.sh
+#fix5-issue-systemd.sh
 #----------
 #(2022_10_22)
 #
@@ -32,10 +32,10 @@ commit_patch(){
 #The main function that executes our program
 main(){
 
-  local prereq_distro='debian'
-  local prereq_releases=(jessie stretch)
+  local prereq_releases=()
+  local excluded_releases=()
   
-  if [ "${DISTRIBUTION}" = "$prereq_distro" ] && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
+  if (! [[ ${excluded_releases[*]} =~ ${RELEASE} ]]) && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
   
     info "This patch is applicable to [${DISTRIBUTION} - ${RELEASE}]. Applying patch."
     commit_patch $@

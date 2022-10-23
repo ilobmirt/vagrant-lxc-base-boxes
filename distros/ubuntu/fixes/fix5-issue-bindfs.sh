@@ -1,12 +1,11 @@
 #!/bin/bash
 set -e
 #=================================================================================================#
-#fix2-issue-238063.sh
+#fix5-issue-bindfs.sh
 #----------
 #(2022_10_22)
 #
-# Ensure that locales are properly set
-# See http://askubuntu.com/a/238063 for more info
+# Fix to allow bindfs
 #=================================================================================================#
 
 source common/ui.sh
@@ -14,14 +13,10 @@ source common/utils.sh
 
 commit_patch(){
 
-  LANG=${LANG:-en_US.UTF-8}
-  
   utils.lxc.start
   
-  sed -i "s/^# ${LANG}/${LANG}/" ${ROOTFS}/etc/locale.gen
-  
-  utils.lxc.attach /usr/sbin/locale-gen ${LANG}
-  utils.lxc.attach update-locale LANG=${LANG}
+  utils.lxc.attach ln -sf /bin/true /sbin/modprobe
+  utils.lxc.attach mknod -m 666 /dev/fuse c 10 229
   
   utils.lxc.stop
 
@@ -30,10 +25,10 @@ commit_patch(){
 #The main function that executes our program
 main(){
 
-  local prereq_distro='debian'
   local prereq_releases=()
+  local excluded_releases=()
   
-  if [ "${DISTRIBUTION}" = "$prereq_distro" ] && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
+  if (! [[ ${excluded_releases[*]} =~ ${RELEASE} ]]) && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
   
     info "This patch is applicable to [${DISTRIBUTION} - ${RELEASE}]. Applying patch."
     commit_patch $@

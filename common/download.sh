@@ -33,30 +33,6 @@ unique_container(){
   fi
 }
 
-systemd_support(){
-
-  local patch_contents=$(cat <<EOF
-
-# settings for systemd with PID 1:
-lxc.autodev = 1
-EOF
-)
-
-  local supported_distro=(fedora ubuntu debian)
-  if [[ ${supported_distro[*]} =~ ${DISTRIBUTION} ]];then
-    utils.lxc.stop
-
-    echo "${patch_contents}" | sudo tee -a /var/lib/lxc/${CONTAINER}/config > /dev/null
-
-    utils.lxc.start
-    utils.lxc.attach rm -f /dev/kmsg
-    utils.lxc.stop
-  else
-    echo "No need to improve systemd support for OS ${DISTRIBUTION}"
-  fi
-
-}
-
 make_container(){
 
   # If we got to this point, we need to create the container
@@ -74,8 +50,6 @@ main(){
   unique_container
 
   make_container
-
-  systemd_support
 
   log "Container created!"
   

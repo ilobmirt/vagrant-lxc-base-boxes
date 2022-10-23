@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 #=================================================================================================#
-#fix3-issue-68.sh
+#fix2-issue-91.sh
 #----------
-#(2022_10_22)
+#(2022_10_21)
 #
-# Ensures that `/tmp` does not get cleared on halt
-# See https://github.com/fgrehm/vagrant-lxc/issues/68 for more info
+# Fixes Networking issues in debian
+# See https://github.com/fgrehm/vagrant-lxc/issues/91 for more info
 #=================================================================================================#
 
 source common/ui.sh
@@ -14,23 +14,22 @@ source common/utils.sh
 
 commit_patch(){
 
-  utils.lxc.start
+  if ! $(grep -q 'ip6-allhosts' ${ROOTFS}/etc/hosts); then
+    log "Adding ipv6 allhosts entry to container's /etc/hosts"
+    echo 'ff02::3 ip6-allhosts' >> ${ROOTFS}/etc/hosts
+  fi
   
-  utils.lxc.attach /usr/sbin/update-rc.d -f checkroot-bootclean.sh remove
-  utils.lxc.attach /usr/sbin/update-rc.d -f mountall-bootclean.sh remove
-  utils.lxc.attach /usr/sbin/update-rc.d -f mountnfs-bootclean.sh remove
-  
-  utils.lxc.stop
+  sed -i -e "s/\(127.0.0.1\s\+localhost\)/\1\n127.0.1.1\t${CONTAINER}\n/g" ${ROOTFS}/etc/hosts
 
 }
 
 #The main function that executes our program
 main(){
 
-  local prereq_distro='debian'
   local prereq_releases=()
+  local excluded_releases=()
   
-  if [ "${DISTRIBUTION}" = "$prereq_distro" ] && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
+  if (! [[ ${excluded_releases[*]} =~ ${RELEASE} ]]) && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
   
     info "This patch is applicable to [${DISTRIBUTION} - ${RELEASE}]. Applying patch."
     commit_patch $@
