@@ -61,11 +61,12 @@ commit_patch(){
 #The main function that executes our program
 main(){
 
-  local prereq_distro='ubuntu'
-  local prereq_releases=()
   local target_feature=${SALT:-0}
   
-  if [ "${DISTRIBUTION}" = "$prereq_distro" ] && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
+  local prereq_releases=()
+  local excluded_releases=()
+  
+  if (! [[ ${excluded_releases[*]} =~ ${RELEASE} ]]) && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
   
     info "This patch is applicable to [${DISTRIBUTION} - ${RELEASE}]."
     if [ $target_feature = 1 ]; then

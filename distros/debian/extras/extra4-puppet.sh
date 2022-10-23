@@ -61,11 +61,12 @@ commit_patch(){
 #The main function that executes our program
 main(){
 
-  local prereq_distro='debian'
-  local prereq_releases=(buster bullseye bookworm)
   local target_feature=${PUPPET:-0}
   
-  if [ "${DISTRIBUTION}" = "$prereq_distro" ] && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
+  local prereq_releases=()
+  local excluded_releases=( sid )
+  
+  if (! [[ ${excluded_releases[*]} =~ ${RELEASE} ]]) && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
   
     info "This patch is applicable to [${DISTRIBUTION} - ${RELEASE}]."
     if [ $target_feature = 1 ]; then

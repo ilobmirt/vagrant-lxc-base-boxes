@@ -58,10 +58,10 @@ commit_patch(){
 #The main function that executes our program
 main(){
 
-  local prereq_distro='centos'
   local prereq_releases=()
+  local excluded_releases=()
   
-  if [ "${DISTRIBUTION}" = "$prereq_distro" ] && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
+  if (! [[ ${excluded_releases[*]} =~ ${RELEASE} ]]) && ([ ${#prereq_releases[@]} -eq 0 ] || [[ ${prereq_releases[*]} =~ ${RELEASE} ]]); then
   
     info "This patch is applicable to [${DISTRIBUTION} - ${RELEASE}]. Applying patch."
     commit_patch $@
