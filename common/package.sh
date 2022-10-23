@@ -30,13 +30,20 @@ popd
 
 # Prepare package contents
 log 'Preparing box package contents'
-if [ -f conf/${DISTRIBUTION}-${RELEASE} ]; then
-  cp conf/${DISTRIBUTION}-${RELEASE} ${WORKING_DIR}/lxc-config
-else
-  cp conf/${DISTRIBUTION} ${WORKING_DIR}/lxc-config
+if [ -d "distros/${DISTRIBUTION}/conf" ]; then
+  if [ -f "distros/${DISTRIBUTION}/conf/${RELEASE}" ]; then
+    cp "distros/${DISTRIBUTION}/conf/${RELEASE}" "${WORKING_DIR}/lxc-config"
+  elif [ -f "distros/${DISTRIBUTION}/conf/default" ]; then
+    cp "distros/${DISTRIBUTION}/conf/default" "${WORKING_DIR}/lxc-config"
+  fi
 fi
-cp conf/metadata.json ${WORKING_DIR}
-sed -i "s/<TODAY>/${NOW}/" ${WORKING_DIR}/metadata.json
+
+# Prepare package metadata
+log 'Preparing box package metadata'
+if [ -f "distros/${DISTRIBUTION}/metadata.json" ]; then
+  cp "distros/${DISTRIBUTION}/metadata.json" "${WORKING_DIR}"
+  sed -i "s/<TODAY>/${NOW}/" "${WORKING_DIR}/metadata.json"
+fi
 
 # Vagrant box!
 log 'Packaging box'

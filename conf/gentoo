@@ -1,5 +1,0 @@
-lxc.mount.auto = cgroup:mixed proc:mixed sys:mixed
-
-# Default console settings
-lxc.tty.max = 4
-lxc.pty.max = 1024

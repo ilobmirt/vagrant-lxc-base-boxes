@@ -1,74 +1,46 @@
-UBUNTU_BOXES= jammy
-DEBIAN_BOXES= bullseye sid
-CENTOS_BOXES= 7
-FEDORA_BOXES= 36
+OS_TARGET=$(strip $(firstword $(MAKECMDGOALS)))
+VERSION_TARGET=$(strip $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS)))
+ARCH_TARGET=$(shell uname -m | sed -e "s/68/38/" | sed -e "s/x86_64/amd64/" | sed -e "s/aarch64/arm64/")
 TODAY=$(shell date -u +"%Y-%m-%d")
 
-# Replace i686 with i386 and x86_64 with amd64
-# Added support for aarch64 as arm64
-ARCH=$(shell uname -m | sed -e "s/68/38/" | sed -e "s/x86_64/amd64/" | sed -e "s/aarch64/arm64/")
+CONTAINER="vagrant-base-$(OS_TARGET)-$(VERSION_TARGET)-$(ARCH_TARGET)"
+PACKAGE="output/${TODAY}/vagrant-lxc-$(OS_TARGET)-$(VERSION_TARGET)-$(ARCH_TARGET).box"
 
-default:
+VALID_OS = ""
+SELECTED_VERSIONS = ""
 
-all: ubuntu debian fedora
+#Project Distro Support gets included here
+include distro-includes
 
-ubuntu: $(UBUNTU_BOXES)
-debian: $(DEBIAN_BOXES)
-centos: $(CENTOS_BOXES)
-fedora: $(FEDORA_BOXES)
+IS_FOUND := $(findstring $(VERSION_TARGET),$(SELECTED_VERSIONS))
 
-# REFACTOR: Figure out how can we reduce duplicated code
-$(UBUNTU_BOXES): CONTAINER = "vagrant-base-${@}-$(ARCH)"
-$(UBUNTU_BOXES): PACKAGE = "output/${TODAY}/vagrant-lxc-${@}-$(ARCH).box"
-$(UBUNTU_BOXES):
+#User has selected one of the supported linux distros for this project
+$(VALID_OS):
+ifneq "[]" "[${IS_FOUND}]"
+	@echo $(OS_TARGET) version found! - $(VERSION_TARGET)
 	@mkdir -p $$(dirname $(PACKAGE))
-	@sudo -E ./mk-debian.sh ubuntu $(@) $(ARCH) $(CONTAINER) $(PACKAGE)
+	@sudo -E ./mk-box.sh $(OS_TARGET) $(VERSION_TARGET) $(ARCH_TARGET) $(CONTAINER) $(PACKAGE)
 	@sudo chmod +rw $(PACKAGE)
 	@sudo chown ${USER}: $(PACKAGE)
-$(DEBIAN_BOXES): CONTAINER = "vagrant-base-${@}-$(ARCH)"
-$(DEBIAN_BOXES): PACKAGE = "output/${TODAY}/vagrant-lxc-${@}-$(ARCH).box"
-$(DEBIAN_BOXES):
-	@mkdir -p $$(dirname $(PACKAGE))
-	@sudo -E ./mk-debian.sh debian $(@) $(ARCH) $(CONTAINER) $(PACKAGE)
-	@sudo chmod +rw $(PACKAGE)
-	@sudo chown ${USER}: $(PACKAGE)
-$(CENTOS_BOXES): CONTAINER = "vagrant-base-centos-${@}-$(ARCH)"
-$(CENTOS_BOXES): PACKAGE = "output/${TODAY}/vagrant-lxc-centos-${@}-$(ARCH).box"
-$(CENTOS_BOXES):
-	@mkdir -p $$(dirname $(PACKAGE))
-	@sudo -E ./mk-centos.sh $(@) $(ARCH) $(CONTAINER) $(PACKAGE)
-	@sudo chmod +rw $(PACKAGE)
-	@sudo chown ${USER}: $(PACKAGE)
-$(FEDORA_BOXES): CONTAINER = "vagrant-base-fedora-${@}-$(ARCH)"
-$(FEDORA_BOXES): PACKAGE = "output/${TODAY}/vagrant-lxc-fedora-${@}-$(ARCH).box"
-$(FEDORA_BOXES):
-	@mkdir -p $$(dirname $(PACKAGE))
-	@sudo -E ./mk-fedora.sh $(@) $(ARCH) $(CONTAINER) $(PACKAGE)
-	@sudo chmod +rw $(PACKAGE)
-	@sudo chown ${USER}: $(PACKAGE)
+else
 
-.PHONY: gentoo
-gentoo:
-	@sudo -E ./mk-gentoo.sh
+ifeq "[]" "[$(VERSION_TARGET)]"
 
-acceptance: CONTAINER = "vagrant-base-acceptance-$(ARCH)"
-acceptance: PACKAGE = "output/${TODAY}/vagrant-lxc-acceptance-$(ARCH).box"
-acceptance:
-	@mkdir -p $$(dirname $(PACKAGE))
-	@PUPPET=1 CHEF=1 sudo -E ./mk-debian.sh ubuntu xenial $(ARCH) $(CONTAINER) $(PACKAGE)
-	@sudo chmod +rw $(PACKAGE)
-	@sudo chown ${USER}: $(PACKAGE)
+	@echo Please select a version for $(OS_TARGET)
+	@echo Valid versions for $(OS_TARGET) are the following:
+	@echo [$(strip $(SELECTED_VERSIONS))]
+else
+	@echo Version $(VERSION_TARGET) not a part of $(OS_TARGET)
+endif
 
-release:
-	@test -z '$(version)' && echo 'version parameter not provided to `make`!' && exit 1 || return 0
-	gh release create -d -a output/${TODAY} $(version)
-	git tag $(version)
-	git push && git push --tags
+endif
 
-clean: ALL_BOXES = ${DEBIAN_BOXES} ${UBUNTU_BOXES} ${CENTOS_BOXES} ${FEDORA_BOXES} acceptance
+#Clean up the boxes made previously
 clean:
-	@for r in $(ALL_BOXES); do \
-		sudo -E ./clean.sh $${r}\
-			vagrant-base-$${r}-$(ARCH) \
-			output/${TODAY}/vagrant-lxc-$${r}-$(ARCH).box; \
-	done
+	@echo cleaning up all projects
+	@sudo -E ./clean.sh "vagrant-base-[a-zA-Z]*-[a-zA-Z0-9\-]*-[a-zA-Z0-9]*" "output/${TODAY}/"
+
+#Catch anything else without freaking out
+%:
+	@:
+

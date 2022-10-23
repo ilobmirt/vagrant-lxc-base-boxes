@@ -1,3 +1,19 @@
+## v1.3.0 (OCT 23 2022)
+
+IMPROVEMENTS:
+
+  - Reorganized project structure to make distro support more modular
+  - Added support for ARM64 environments
+
+REGRESSIONS:
+
+  - Removed support for other modes in Makefile outside of box creation and cleanup
+
+OTHER NOTES:
+
+  - Removed much of older unsupported distro versions
+  - Removed undocumented unsupported distro - Gentoo
+
 ## v1.2.0 (Sep 22, 2014)
 
 IMPROVEMENTS:

@@ -103,4 +103,3 @@ There are no pre-built base boxes for this repo. You have to build them yourself
 ## What makes up for a vagrant-lxc base box?
 
 See [vagrant-lxc/BOXES.md](https://github.com/fgrehm/vagrant-lxc/blob/master/BOXES.md)
-
