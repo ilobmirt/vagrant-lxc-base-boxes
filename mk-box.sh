@@ -39,7 +39,7 @@ start_log(){
 
   printf "\n==========\nstart_log()\n==========\n"
 
-#  local CONTAINER=$1
+  local CONTAINER=$1
   local NOW=$(date -u)
   local LOG=$(readlink -f .)/log/${CONTAINER}.log
   
@@ -55,7 +55,7 @@ require_unique_package(){
 
   printf "\n==========\nrequire_unique_log()\n==========\n"
 
-#  local PACKAGE=$1
+  local PACKAGE=$1
   
   if [ -f ${PACKAGE} ]; then
     warn "The box '${PACKAGE}' already exists, skipping..."
@@ -81,9 +81,9 @@ main(){
     
   require_root
   
-  start_log #$CONTAINER
+  start_log "$CONTAINER"
   
-  require_unique_package #$PACKAGE
+  require_unique_package "$PACKAGE"
   
   debug "Creating ${WORKING_DIR}"
   mkdir -p ${WORKING_DIR}
