@@ -27,7 +27,7 @@ main(){
 
       target_script="$target_dir/$file_index"
       info "Checking out - $target_script"
-      $target_script
+      $target_script $@
 
     done
 
