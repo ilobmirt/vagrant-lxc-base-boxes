@@ -49,8 +49,8 @@ commit_patch(){
   wait_for_ip
   
   utils.lxc.attach apt-get update
-  utils.lxc.attach apt-get install ${PACKAGES[*]} -y --force-yes
-  utils.lxc.attach apt-get upgrade -y --force-yes
+  utils.lxc.attach apt-get install ${PACKAGES[*]} -y --allow-unauthenticated --allow-downgrades --allow-remove-essential --allow-change-held-packages
+  utils.lxc.attach apt-get upgrade -y --allow-unauthenticated --allow-downgrades --allow-remove-essential --allow-change-held-packages
   
   utils.lxc.stop
 
