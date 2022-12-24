@@ -3,7 +3,7 @@ set -e
 #=================================================================================================#
 #prepare-vagrant-user.sh
 #----------
-#(2022_12_23)
+#(2022_12_18)
 #
 # Prepares the operating system for the Vagrant user
 #=================================================================================================#
@@ -17,23 +17,12 @@ main(){
   
   # Create vagrant user
   if $(grep -q 'vagrant' ${ROOTFS}/etc/shadow); then
-
     log 'Skipping vagrant user creation'
-
   else
-
     debug 'Creating vagrant user...'
-    chroot ${ROOTFS} useradd --create-home -s /bin/bash -u 1000 vagrant
+    chroot ${ROOTFS} groupadd -r vagrant
+    chroot ${ROOTFS} useradd -r -m --gid=vagrant --shell=/bin/bash vagrant
     echo -n 'vagrant:vagrant' | chroot ${ROOTFS} chpasswd
-    sed -i 's/^Defaults\s\+requiretty/# Defaults requiretty/' $ROOTFS/etc/sudoers
-
-    if [ ${RELEASE} -eq 6 ]; then
-      info 'Disabling password aging for root...'
-      # disable password aging (required on Centos 6)
-      # pretend that password was changed today (won't fail during provisioning)
-      chroot ${ROOTFS} chage -I -1 -m 0 -M 99999 -E -1 -d `date +%Y-%m-%d` root
-    fi
-
   fi
 
   # Configure SSH access

@@ -3,7 +3,7 @@ set -e
 #=================================================================================================#
 #prepare-vagrant-user.sh
 #----------
-#(2022_12_18)
+#(2022_12_23)
 #
 # Prepares the operating system for the Vagrant user
 #=================================================================================================#
@@ -13,7 +13,7 @@ source common/ui.sh
 main(){
 
   local ROOTFS="$1"
-  local VAGRANT_KEY="$2"
+  local VAGRANT_KEY="${@:2}"
   
   # Create vagrant user
   if $(grep -q 'vagrant' ${ROOTFS}/etc/shadow); then
