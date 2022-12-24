@@ -17,3 +17,7 @@ SELECTED_VERSIONS += $(if $(findstring fedora,$(OS_TARGET)),$(FEDORA_VERSIONS))
 VALID_OS += alpine
 ALPINE_VERSIONS = 3.13 3.14 3.15 3.16 edge
 SELECTED_VERSIONS += $(if $(findstring alpine,$(OS_TARGET)),$(ALPINE_VERSIONS))
+
+VALID_OS += openwrt
+OPENWRT_VERSIONS = 21.02 22.03 snapshot
+SELECTED_VERSIONS += $(if $(findstring openwrt,$(OS_TARGET)),$(OPENWRT_VERSIONS))
