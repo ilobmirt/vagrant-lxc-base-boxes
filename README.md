@@ -6,40 +6,33 @@ This repository contains a set of scripts for creating base boxes for usage with
 ## What distros / versions can I build with this?
 
 * Ubuntu
-  - Jammy Jellyfish (2022.04) (x86_64 + arm64)
+  - bionic
+  - focal
+  - jammy
+  - kinetic
+  - xenial
 * Debian
-  - Bullseye (2021.08) (x86_64 + arm64)
-  - Sid (x86_64 + arm64)
+  - buster
+  - bullseye
+  - bookworm
+  - sid
 * Fedora
-  - 36 (2022.02) (x86_64 + arm64)
-  - rawhide (x86_64 + arm64)
+  - 35
+  - 36
 * CentOS
-  - 7 (2014.07) (x86_64 + arm64)
-
-## Distros tested from this fork
-* **Debian**
-  - Bullseye (2021.08) (x86_64/arm64)
-    - [] / [X] Base IMG
-    - [] / [] Ansible
-    - [] / [] Chef
-    - [] / [] Puppet
-    - [] / [] Salt
-
-* **Fedora**
-  - 36 (2022.04) (x86_64/arm64)
-    - [] / [X] Base IMG
-    - [] / [] Ansible
-    - [] / [] Chef
-    - [] / [] Puppet
-    - [] / [] Salt
-
-* **Ubuntu**
-  - Jammy Jellyfish (2022.04) (x86_64/arm64)
-    - [] / [X] Base IMG
-    - [] / [] Ansible
-    - [] / [] Chef
-    - [] / [] Puppet
-    - [] / [] Salt
+  - 7
+  - 8-Stream
+  - 9-Stream
+* Alpine
+  - 3.13
+  - 3.14
+  - 3.15
+  - 3.16
+  - edge
+* OpenWRT
+  - 21.02
+  - 22.03
+  - snapshot
 
 ## Container Hosts testing this fork
 
@@ -64,20 +57,20 @@ create one based on [this](https://github.com/lxc/lxc/blob/master/templates/lxc-
 and drop it on your lxc templates path (usually `/usr/share/lxc/templates`)._
 
 ```sh
-git clone https://github.com/hsoft/vagrant-lxc-base-boxes.git
-cd vagrant-lxc-base-boxes
-make stretch
+user@host$ git clone https://github.com/ilobmirt/vagrant-lxc-base-boxes.git
+user@host$ cd vagrant-lxc-base-boxes
+user@host$ make debian sid
 ```
 
 By default no provisioning tools will be included but you can pick the ones
 you want by providing some environmental variables. For example:
 
 ```sh
-ANSIBLE=1 PUPPET=1 CHEF=1 \
-make stretch
+user@host$ ANSIBLE=1 PUPPET=1 CHEF=1 \
+make debian sid
 ```
 
-Will build a Debian Stretch x86_64 box with latest Ansible, Puppet and Chef pre-installed.
+Will build a Debian Sid LXC box with latest Ansible, Puppet and Chef pre-installed.
 
 When using ANSIBLE=1, an optional ANSIBLE_VERSION parameter may be passed that
 will specify which version of ansible to install. By default it will install
@@ -86,19 +79,48 @@ the latest Ansible.
 Additional packages to be installed can be specified with the ADDPACKAGES variable:
 
 ```sh
-ADDPACKAGES="aptitude htop" \
-make xenial
+user@host$ ADDPACKAGES="aptitude htop" \
+make ubuntu xenial
 ```
 
-Will build a Ubuntu Xenial x86_64 box with aptitude and htop as additional
+Will build a Ubuntu Xenial lxc box with aptitude and htop as additional
 packages pre-installed. You can also specify the packages in a file
 xenial_packages.
 
 Note: ADDPACKAGES is currently only implemented for flavors of debian.
 
+```sh
+user@host$ make debian
+Please select a version for debian
+Valid versions for debian are the following:
+[ buster bullseye bookworm sid]
+```
+Omitting the version will list available versions for the chosen distro
+
+```sh
+user@host$ make clean
+cleaning up all projects
+    [-] TARGET 'vagrant-base-alpine-edge-arm64' -
+    [-] . . . DESTROYING
+    [-] TARGET 'vagrant-base-centos-9-Stream-arm64' -
+    [-] . . . DESTROYING
+    [-] TARGET 'vagrant-base-openwrt-22.03-arm64' -
+    [-] . . . STOPPING
+    [-] . . . DESTROYING
+    [-] Removing 'output/2022-12-25/'
+```
+When done, user can easily clean up output folder and any/all lxc containers associated with the project
+
 ## Pre built base boxes
 
-There are no pre-built base boxes for this repo. You have to build them yourself.
+There are some premade boxes that I have made myself:
+
+* Debian
+  - bullseye > "ilobmirt/debian-bullseye-arm64-lxc"
+* Alpine
+  - 3.16 > "ilobmirt/alpine-3.16-arm64-lxc"
+
+These boxes have been first built by this script before being run locally. Provided they worked for me, will then be pushed to Vagrant. There may be no guarantee that these boxes work for you, even with matching host environment. These premade boxes will have a date based version system of the format 'YY.MMDD'. A box with version '22.1223' would be a premade box released 2022 DEC 23.
 
 ## What makes up for a vagrant-lxc base box?
 
